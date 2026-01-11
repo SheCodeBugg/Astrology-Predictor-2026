@@ -81,6 +81,207 @@ def get_houses(ascendant_degree):
 
     return houses
 
+#################### Planet Strengths ###################
+
+class PlanetaryStrength:
+    def __init__(self):
+
+        self.exaltations = {
+            'Sun': 'Aries',
+            'Moon': 'Taurus',
+            'Mars': 'Capricorn',
+            'Mercury': 'Virgo',
+            'Jupiter': 'Cancer',
+            'Venus': 'Pisces',
+            'Saturn': 'Libra',
+            'Rahu': 'Scorpio',
+            'Ketu': 'Scorpio'
+        }
+
+        self.debilitations = {
+            'Sun': 'Libra',
+            'Moon': 'Scorpio',
+            'Mars': 'Cancer',
+            'Mercury': 'Pisces',
+            'Jupiter': 'Capricorn',
+            'Venus': 'Virgo',
+            'Saturn': 'Aries',
+            'Rahu': 'Taurus',
+            'Ketu': 'Taurus'
+        }
+
+        self.exalt_debil_degree = {
+            'Sun': 10,
+            'Moon': 3,
+            'Mars': 28,
+            'Mercury': 15,
+            'Jupiter': 5,
+            'Venus': 27,
+            'Saturn': 20,
+            'Rahu': None, 
+            'Ketu': None
+        }
+
+        self.positive_constellation = {
+            'Sun': 'Leo',
+            'Moon': 'Cancer',
+            'Mars': 'Aries',
+            'Mercury': 'Gemini',
+            'Jupiter': 'Sagittarius',
+            'Venus': 'Libra',
+            'Saturn': 'Aquarius',
+            'Rahu': None, 
+            'Ketu': None
+        }
+
+        self.negative_constellation = {
+            'Sun': None,
+            'Moon': None,
+            'Mars': 'Scorpio',
+            'Mercury': 'Virgo',
+            'Jupiter': 'Pisces',
+            'Venus': 'Taurus',
+            'Saturn': 'Capricorn',
+            'Rahu': None, 
+            'Ketu': None
+        }
+
+        self.mulatrikona = {
+            'Sun': 'Leo',
+            'Moon': 'Taurus',
+            'Mars': 'Aries',
+            'Mercury': 'Virgo',
+            'Jupiter': 'Sagittarius',
+            'Venus': 'Libra',
+            'Saturn': 'Aquarius',
+            'Rahu': None, 
+            'Ketu': None
+        }
+
+        self.mulatrikona_degree = {
+            'Sun': (0, 21),
+            'Moon': (4, 31),
+            'Mars': (0, 13),
+            'Mercury': (16, 21),
+            'Jupiter': (0, 11),
+            'Venus': (0, 16),
+            'Saturn': (0, 21),
+            'Rahu': None, 
+            'Ketu': None
+        }
+
+        self.friends = {
+            'Sun': ['Moon', 'Mars', 'Jupiter'],
+            'Moon': ['Sun', 'Mercury'],
+            'Mars': ['Sun', 'Moon', 'Jupiter'],
+            'Mercury': ['Sun', 'Venus'],
+            'Jupiter': ['Sun', 'Moon', 'Mars'],
+            'Venus': ['Mercury', 'Saturn'],
+            'Saturn': ['Mercury', 'Venus'],
+            'Rahu': [], 
+            'Ketu': []
+        }
+
+        self.neutrals = {
+            'Sun': ['Mercury'],
+            'Moon': ['Venus', 'Mars', 'Jupiter', 'Saturn'],
+            'Mars': ['Venus', 'Saturn'],
+            'Mercury': ['Mars', 'Saturn', 'Jupiter'],
+            'Jupiter': ['Saturn'],
+            'Venus': ['Mars', 'Jupiter'],
+            'Saturn': ['Jupiter'],
+            'Rahu': [], 
+            'Ketu': []
+        }
+
+        self.enemies = {
+            'Sun': ['Venus', 'Saturn'],
+            'Moon': ['None'],
+            'Mars': ['Mercury'],
+            'Mercury': ['Moon'],
+            'Jupiter': ['Mercury', 'Venus'],
+            'Venus': ['Sun', 'Moon'],
+            'Saturn': ['Sun', 'Moon', 'Mars'],
+            'Rahu': [], 
+            'Ketu': []
+        }
+
+        self.rulerships = {
+            'Sun': ['Leo'],
+            'Moon': ['Cancer'],
+            'Mars': ['Aries', 'Scorpio'],
+            'Mercury': ['Gemini', 'Virgo'],
+            'Jupiter': ['Sagittarius', 'Pisces'],
+            'Venus': ['Taurus', 'Libra'],
+            'Saturn': ['Capricorn', 'Aquarius'],
+            'Rahu': [], 
+            'Ketu': []
+        }
+
+        pass
+
+    def get_sign_ruler(self, sign):
+        for planet, signs in self.rulerships.items(): # For the planet and sign
+            if sign in signs:
+                return planet
+        return None
+
+    # Calculate dignity / state
+    def get_dignity(self, planet, sign, degree=None):
+
+        if self.exaltations.get(planet) == sign: # if exalted planet equals current sign
+            return 'Exalted'
+                
+        elif self.mulatrikona.get(planet) == sign:
+            return 'Mulatrikona'
+        
+        elif self.positive_constellation.get(planet) == sign:
+            return 'Own Sign (positive)'
+        
+        elif self.negative_constellation.get(planet) == sign:
+            return 'Own Sign (negative)'
+        
+        sign_ruler = self.get_sign_ruler(sign)
+
+        if sign_ruler in self.friends.get(planet, []): # gets friends list 
+            return 'Friend Sign'
+        
+        elif sign_ruler in self.neutrals.get(planet, []):
+            return 'Neutral Sign'
+        
+        elif sign_ruler in self.enemies.get(planet, []):
+            return 'Enemy Sign'
+        
+        elif self.debilitations.get(planet) == sign:
+            return 'Debilitated'
+
+        return 'none'
+
+    def calculate_strength(self, planet, sign, degree=None):
+        dignity = self.get_dignity(planet, sign, degree)
+
+        match dignity:
+            case 'Exalted':
+                base_strength = "87.5 - 100"
+            case 'Mulatrikona':
+                base_strength = "75 - 87.5"
+            case 'Own Sign (positive)':
+                base_strength = "62.5 - 75"
+            case 'Own Sign (negative)':
+                base_strength = "50 - 62.5"
+            case 'Friend Sign':
+                base_strength = "37.5 - 50"
+            case 'Neutral Sign':
+                base_strength = "25 - 37.5"
+            case 'Enemy Sign':
+                base_strength = "12.5 - 25"
+            case 'Debilitated':
+                base_strength = "0 - 12.5"
+            case _:
+                base_strength = "N/A"
+
+        return base_strength
+
 ########################  FLASK ROUTE  ###############################
 @app.route('/api/chart', methods=['POST'])
 def calculate_chart():
@@ -114,9 +315,9 @@ def calculate_chart():
 #                           Set Mode                                 #
 
         gregflag = 1
-        flags = swe.FLG_SWIEPH 
-        # set sidereal mode
-        mode = swe.set_sid_mode(flags)
+        # Set Lahiri ayanamsa (most common for Vedic astrology)
+        swe.set_sid_mode(swe.SIDM_LAHIRI)
+        flags = swe.FLG_SWIEPH | swe.FLG_SIDEREAL
 
 #                            Date Time / Conversion                  #
 
@@ -130,6 +331,9 @@ def calculate_chart():
 ####################### Find Planet Data ###########################
         planet_data = {}
 
+        # Create an instance for PlanetaryStrength
+        strength_calculator = PlanetaryStrength()
+
         for name, planet_id in PLANETS.items(): # assigns the identifiers to items in the dictionary 
             # Get the position fron the API
             pos = swe.calc(jdet, planet_id, flags)
@@ -139,18 +343,33 @@ def calculate_chart():
             sign, degree_in_sign = get_sign(degree)
             nakshatra, pada = get_nakshatra(degree)
 
+
+            # DEBUG: Print what's being checked
+            if name == 'Mercury':  # Only for Mercury to reduce clutter
+                print(f"\n=== DEBUGGING MERCURY ===")
+                print(f"Mercury is in sign: {sign}")
+                print(f"Positive constellations: {strength_calculator.positive_constellation}")
+                print(f"Does positive_constellation have Mercury? {strength_calculator.positive_constellation.get('Mercury')}")
+                print(f"========================\n")
+
+            # Calculate planet strengths
+            dignity = strength_calculator.get_dignity(name, sign, degree_in_sign)
+            strength = strength_calculator.calculate_strength(name, sign, degree_in_sign)
+
             # Store in a dictionary
             planet_data[name] = {
                 'degree': float(degree),
                 'sign': sign,
                 'degree_in_sign': float(degree_in_sign),
                 'nakshatra': nakshatra,
-                'pada': int(pada)
+                'pada': int(pada),
+                'dignity': dignity,
+                'strength_range': strength
             }
 
             # Print formated output
             # (":10" makes the output take up to characters. ":6.2f" is 6 characters 2 decimal places)
-            print(f"{name:10} {degree:6.2f}° - {sign:12} {degree_in_sign:5.2f}° - {nakshatra:20} Pada {pada}") 
+            print(f"{name:10} {degree:6.2f}° - {sign:12} {degree_in_sign:5.2f}° - {nakshatra:20} Pada {pada} - Dignity: {dignity:15} Strength: {strength}") 
 
 ####################### Find House Data ###########################
 
