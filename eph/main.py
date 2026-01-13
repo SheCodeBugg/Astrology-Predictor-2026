@@ -5,7 +5,8 @@ import swisseph as swe
 app = Flask(__name__)
 CORS(app)
 
-
+from dasha import register_dasha_routes
+register_dasha_routes(app)
 
 swe.set_ephe_path('/Users/shelby/Coding Projects/Astro 2026/eph/ephe_data')
 
@@ -61,7 +62,7 @@ def get_nakshatra(degree):
     nak_num = int(degree / nakshatra_size) # Get nakshatra number (0-26)
     degree_in_nak = degree % nakshatra_size # Get degree within nakshatra
     pada = int(degree_in_nak / (nakshatra_size / 4)) + 1 # Get pada (quarter) - each nakshatra has 4 padas
-    return NAKSHATRAS[nak_num], pada
+    return NAKSHATRAS[nak_num], pada, degree_in_nak
 
 # Calculate houses
 def get_houses(ascendant_degree):
@@ -341,7 +342,7 @@ def calculate_chart():
 
             # Calculate the sign and nakshatra
             sign, degree_in_sign = get_sign(degree)
-            nakshatra, pada = get_nakshatra(degree)
+            nakshatra, pada, degree_in_nak = get_nakshatra(degree)
 
 
             # DEBUG: Print what's being checked
@@ -363,6 +364,7 @@ def calculate_chart():
                 'degree_in_sign': float(degree_in_sign),
                 'nakshatra': nakshatra,
                 'pada': int(pada),
+                'degree_in_nak': degree_in_nak,
                 'dignity': dignity,
                 'strength_range': strength
             }
