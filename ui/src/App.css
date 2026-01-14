@@ -26,6 +26,17 @@ header h1 {
   margin: 0 auto;
 }
 
+.input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.input-header h2 {
+  margin: 0;
+}
+
 .input-section {
   background: white;
   padding: 30px;
@@ -65,6 +76,75 @@ input {
 input:focus {
   outline: none;
   border-color: #667eea;
+}
+
+.collapse-button {
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.collapse-button:hover {
+  background-color: #5a6268;
+}
+
+birth-summary-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+  transition: transform 0.2s ease, box-shadowm0.2s ease;
+}
+
+.birth-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.birth-summary-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.birth-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.birth-summary-info p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.birth-summary-info strong {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.edit-button {
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
 }
 
 button {

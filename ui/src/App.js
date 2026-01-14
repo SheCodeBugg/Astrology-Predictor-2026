@@ -289,6 +289,7 @@ function App() {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isInputExpanded, setIsInputsExpanded] = useState(true);
 
   // Arrow function with async / await inside 
   const calculateChart = async () => {
@@ -309,6 +310,7 @@ function App() {
 
       if (data.success) {
         setChartData(data);
+        setIsInputsExpanded(false);
       } else {
         setError(data.error);
       }
@@ -318,6 +320,21 @@ function App() {
     setLoading(false)
   };
 
+  // Reformat for collapse
+  const formatDateTime = () => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const date = `${monthNames[birthData.month - 1]} ${birthData.day}, ${birthData.year}`;
+    const time = `${String(birthData.hour).padStart(2, '0')}:${String(birthData.mins).padStart(2, '0')}:${String(birthData.secs).padStart(2, '0')}`;
+    return `${date} at ${time}`;                    
+  };
+
+  const formatLocation = () => {
+    const latDir = birthData.lat >= 0 ? 'N' : 'S';
+    const lonDir = birthData.lon >= 0 ? 'E' : 'W';
+    return `${Math.abs(birthData.lat).toFixed(4)}°${latDir}, ${Math.abs(birthData.lon).toFixed(4)}°${lonDir}`;
+  };
+
   // Returned data
   return (
     <div className='App'>
@@ -325,7 +342,38 @@ function App() {
 
       <div className='container'>
         <div className='input-section'>
-          <h2>Birth Information</h2>
+          {!isInputExpanded && chartData ? (
+            // Collapsed view - Summary card
+            <div className='birth-summary-card'>
+              <div className='birth-summary-content'>
+                <h3>Birth Details</h3>
+                <div className='birth-summary-info'>
+                  <p><strong>Date & Time:</strong> {formatDateTime()}</p>
+                  <p><strong>Location:</strong> {formatLocation()}</p>
+                  <p><strong>Timezone:</strong> UTC{birthData.tzoffset >= 0 ? '+' : ''}{birthData.tzoffset}</p>
+                </div>
+              </div>
+              <button
+                className='edit-button'
+                onClick={() => setIsInputsExpanded(true)}
+              >
+                ✏️ Edit
+              </button>
+            </div>
+          ) : (
+            // Expanded view - Full form
+            <>
+              <div className='input-header'>
+                <h2>Birth Information</h2>
+                {chartData && (
+                  <button
+                    className='collapse-button'
+                    onClick={() => setIsInputsExpanded(false)}
+                  >
+                    ▲ Collapse
+                  </button>
+                )}
+              </div>
 
           <div className='form-row'>
             <label>
@@ -425,6 +473,9 @@ function App() {
               />
             </label>
           </div>
+            </>
+          )}
+
 
           <button onClick={calculateChart} disabled={loading}> {/* if loading true but wont click */}
             {loading ? 'Calculating...' : 'Calculate Chart'} {/* ternary operator if true do a if false do b */}
