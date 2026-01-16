@@ -82,6 +82,17 @@ def get_houses(ascendant_degree):
 
     return houses
 
+def get_planet_house(planet_degree, houses):
+    planet_degree = planet_degree % 360
+    planet_sign_num = int(planet_degree / 30)
+
+    # find which house for which sign
+    for house_num, house_info in houses.items():
+        if house_info['sign_number'] == planet_sign_num:
+            return house_num
+        
+    return 1 # default effect
+
 #################### Planet Strengths ###################
 
 class PlanetaryStrength:
@@ -335,6 +346,11 @@ def calculate_chart():
         # Create an instance for PlanetaryStrength
         strength_calculator = PlanetaryStrength()
 
+        # First calculate houses so we can reference them
+        house_data = swe.houses_ex2(jdet, lat, lon, hsys, flags)
+        ascendant_degree = house_data[1][0]
+        houses = get_houses(ascendant_degree)
+
         for name, planet_id in PLANETS.items(): # assigns the identifiers to items in the dictionary 
             # Get the position fron the API
             pos = swe.calc(jdet, planet_id, flags)
@@ -344,14 +360,8 @@ def calculate_chart():
             sign, degree_in_sign = get_sign(degree)
             nakshatra, pada, degree_in_nak = get_nakshatra(degree)
 
-
-            # DEBUG: Print what's being checked
-            if name == 'Mercury':  # Only for Mercury to reduce clutter
-                print(f"\n=== DEBUGGING MERCURY ===")
-                print(f"Mercury is in sign: {sign}")
-                print(f"Positive constellations: {strength_calculator.positive_constellation}")
-                print(f"Does positive_constellation have Mercury? {strength_calculator.positive_constellation.get('Mercury')}")
-                print(f"========================\n")
+            # Calculate which house the planet is in
+            house_num = get_planet_house(degree, houses)
 
             # Calculate planet strengths
             dignity = strength_calculator.get_dignity(name, sign, degree_in_sign)
@@ -366,7 +376,8 @@ def calculate_chart():
                 'pada': int(pada),
                 'degree_in_nak': degree_in_nak,
                 'dignity': dignity,
-                'strength_range': strength
+                'strength_range': strength,
+                'house': house_num
             }
 
             # Print formated output
@@ -374,13 +385,6 @@ def calculate_chart():
             print(f"{name:10} {degree:6.2f}° - {sign:12} {degree_in_sign:5.2f}° - {nakshatra:20} Pada {pada} - Dignity: {dignity:15} Strength: {strength}") 
 
 ####################### Find House Data ###########################
-
-        # Get data from the API
-        house_data = swe.houses_ex2(jdet, lat, lon, hsys, flags)
-        ascendant_degree = house_data[1][0]
-
-        # Get houses
-        houses = get_houses(ascendant_degree)
 
         print("HOUSE SYSTEM:")
         print("=" * 60)

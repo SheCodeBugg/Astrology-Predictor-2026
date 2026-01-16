@@ -37,13 +37,23 @@ header h1 {
   margin: 0;
 }
 
+/* make input shrink when coollapsed */
 .input-section {
   background: white;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
+  transition: all 0.3s ease;
 }
+
+.input-section.collapsed {
+  background:  transparent;
+  box-shadow: none;
+  padding:  40px;
+  margin-bottom: 70px;
+}
+
 
 .input-section h2 {
   margin-bottom: 20px;
@@ -93,39 +103,49 @@ input:focus {
   background-color: #5a6268;
 }
 
-birth-summary-card {
-  display: flex;
-  justify-content: space-between;
+.birth-summary-card {
+  display: inline-flex;
   align-items: center;
+  gap: 15px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   color: white;
-  transition: transform 0.2s ease, box-shadowm0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: fit-content;
+  margin-bottom: 10px;
 }
 
 .birth-summary-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.birth-summary-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .birth-summary-content h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .birth-summary-info {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  gap: 12px;
 }
 
 .birth-summary-info p {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0.95;
+  white-space: nowrap;
 }
 
 .birth-summary-info strong {
@@ -147,8 +167,36 @@ birth-summary-card {
   white-space: nowrap;
 }
 
+.edit-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* responsive adjustments */
+@media (max-width: 768px) {
+  .birth-summary-card {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .edit-button {
+    width: 100%
+  }
+
+  .input-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .collapse-button {
+    width: 100%;
+  }
+}
+
 button {
-  width: 100%;
   padding: 15px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -191,21 +239,27 @@ button:disabled {
   margin-bottom: 20px;
 }
 
+.flex {
+display: flex;
+justify-content: center;
+}
+
 .ascendant-box {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   text-align: center;
-  margin-bottom: 30px;
+  width: 40%;
+  margin-bottom: -45px;
 }
 
 .ascendant-box h3 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .ascendant-box p {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 
@@ -234,7 +288,7 @@ button:disabled {
   border-radius: 8px;
   text-align: center;
   border: 2px solid #e0e7ff;
-  transition: transform 0.2s, box-shadow 0.2;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .house-card:hover {
